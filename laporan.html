@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Retail Pro - Laporan</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation (sama seperti index.html) -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-store"></i> POS Retail Pro</h2>
+                <button class="close-sidebar" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="kasir.html">
+                        <i class="fas fa-cash-register"></i> Kasir
+                    </a>
+                </li>
+                <li>
+                    <a href="tambah_barang.html">
+                        <i class="fas fa-plus-circle"></i> Tambah Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="restok.html">
+                        <i class="fas fa-boxes"></i> Restok Barang
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="laporan.html">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" id="themeToggle">
+                        <i class="fas fa-moon"></i> Mode Gelap/Terang
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="printReceipt">
+                        <i class="fas fa-print"></i> Cetak Struk Terakhir
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span>Sistem Online</span>
+                </div>
+                <div class="datetime" id="currentDateTime"></div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1><i class="fas fa-chart-bar"></i> Laporan</h1>
+                    <p class="subtitle">Analisis dan laporan bisnis</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="exportAll">
+                        <i class="fas fa-file-export"></i> Export Semua
+                    </button>
+                </div>
+            </header>
+
+            <!-- Laporan Content -->
+            <div class="laporan-content">
+                <!-- Filters Section -->
+                <div class="filters-section">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="reportType">
+                                <i class="fas fa-chart-pie"></i> Jenis Laporan
+                            </label>
+                            <select id="reportType">
+                                <option value="sales">Penjualan</option>
+                                <option value="products">Produk</option>
+                                <option value="stock">Stok</option>
+                                <option value="financial">Keuangan</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="timePeriod">
+                                <i class="fas fa-calendar"></i> Periode Waktu
+                            </label>
+                            <select id="timePeriod">
+                                <option value="today">Hari Ini</option>
+                                <option value="yesterday">Kemarin</option>
+                                <option value="week" selected>Minggu Ini</option>
+                                <option value="month">Bulan Ini</option>
+                                <option value="year">Tahun Ini</option>
+                                <option value="custom">Custom Range</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group" id="customDateRange" style="display: none;">
+                            <label for="startDate">
+                                <i class="fas fa-calendar-alt"></i> Dari
+                            </label>
+                            <input type="date" id="startDate">
+                            <label for="endDate">Sampai</label>
+                            <input type="date" id="endDate">
+                        </div>
+
+                        <div class="filter-group">
+                            <button class="btn btn-primary" id="applyFilters">
+                                <i class="fas fa-filter"></i> Terapkan Filter
+                            </button>
+                            <button class="btn btn-secondary" id="resetFilters">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-icon total-sales">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="summary-info">
+                            <h4>Total Penjualan</h4>
+                            <p class="summary-value" id="totalSales">Rp 0</p>
+                            <p class="summary-change" id="salesChange">+0% dari periode sebelumnya</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon transactions">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="summary-info">
+                            <h4>Total Transaksi</h4>
+                            <p class="summary-value" id="totalTransactions">0</p>
+                            <p class="summary-change" id="transactionsChange">+0 transaksi</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon items">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="summary-info">
+                            <h4>Item Terjual</h4>
+                            <p class="summary-value" id="totalItemsSold">0</p>
+                            <p class="summary-change" id="itemsChange">+0 item</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon profit">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="summary-info">
+                            <h4>Profit</h4>
+                            <p class="summary-value" id="totalProfit">Rp 0</p>
+                            <p class="summary-change" id="profitChange">+0% margin</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="report-charts">
+                    <div class="chart-container large">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-line"></i> Grafik Penjualan</h3>
+                            <div class="chart-actions">
+                                <button class="btn-chart-type active" data-type="line">Line</button>
+                                <button class="btn-chart-type" data-type="bar">Bar</button>
+                            </div>
+                        </div>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Penjualan per Kategori</h3>
+                        </div>
+                        <canvas id="categorySalesChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-bar"></i> Top 10 Produk</h3>
+                        </div>
+                        <canvas id="topProductsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Data Tables -->
+                <div class="data-tables">
+                    <div class="table-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-table"></i> Detail Transaksi</h3>
+                            <div class="table-actions">
+                                <button class="btn btn-secondary" id="exportTable">
+                                    <i class="fas fa-file-excel"></i> Export Excel
+                                </button>
+                                <button class="btn btn-secondary" id="exportPDF">
+                                    <i class="fas fa-file-pdf"></i> Export PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="transactionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tanggal</th>
+                                        <th>Waktu</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Pembayaran</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsTableBody">
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                    <tr>
+                                        <td colspan="7" class="text-center">Pilih filter untuk menampilkan data</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-footer">
+                            <div class="pagination" id="pagination">
+                                <!-- Pagination akan diisi oleh JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-box"></i> Stok Produk</h3>
+                            <div class="table-actions">
+                                <button class="btn btn-secondary" id="exportStock">
+                                    <i class="fas fa-file-export"></i> Export Stok
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="stockTable">
+                                <thead>
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Nama Produk</th>
+                                        <th>Kategori</th>
+                                        <th>Stok</th>
+                                        <th>Min Stok</th>
+                                        <th>Status</th>
+                                        <th>Terakhir Restok</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stockTableBody">
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                    <tr>
+                                        <td colspan="7" class="text-center">Memuat data stok...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="export-section">
+                    <h3><i class="fas fa-download"></i> Export Laporan</h3>
+                    <div class="export-options">
+                        <div class="export-option">
+                            <div class="export-icon pdf">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="export-info">
+                                <h4>Laporan PDF</h4>
+                                <p>Laporan lengkap dalam format PDF</p>
+                            </div>
+                            <button class="btn btn-primary" id="exportPDFFull">
+                                <i class="fas fa-download"></i> Download PDF
+                            </button>
+                        </div>
+
+                        <div class="export-option">
+                            <div class="export-icon excel">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <div class="export-info">
+                                <h4>Laporan Excel</h4>
+                                <p>Data detail dalam format Excel</p>
+                            </div>
+                            <button class="btn btn-success" id="exportExcelFull">
+                                <i class="fas fa-download"></i> Download Excel
+                            </button>
+                        </div>
+
+                        <div class="export-option">
+                            <div class="export-icon telegram">
+                                <i class="fas fa-paper-plane"></i>
+                            </div>
+                            <div class="export-info">
+                                <h4>Kirim ke Telegram</h4>
+                                <p>Kirim laporan ke grup Telegram</p>
+                            </div>
+                            <button class="btn btn-telegram" id="sendToTelegram">
+                                <i class="fas fa-paper-plane"></i> Kirim Laporan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay untuk mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Transaction Detail Modal -->
+    <div class="modal" id="transactionDetailModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-receipt"></i> Detail Transaksi</h3>
+                <button class="close-modal" id="closeTransactionModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="transaction-detail" id="transactionDetailContent">
+                    <!-- Detail transaksi akan ditampilkan di sini -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navbar functionality
+            document.getElementById('toggleSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.add('active');
+                document.getElementById('sidebarOverlay').classList.add('active');
+            });
+
+            document.getElementById('closeSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            });
+
+            document.getElementById('sidebarOverlay').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                this.classList.remove('active');
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                const body = document.body;
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    this.querySelector('i').className = 'fas fa-moon';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-moon"></i> Mode Gelap';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    this.querySelector('i').className = 'fas fa-sun';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+                }
+            });
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').querySelector('i').className = 'fas fa-sun';
+                document.getElementById('themeToggle').querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+            }
+
+            // Update datetime
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                document.getElementById('currentDateTime').textContent = 
+                    now.toLocaleDateString('id-ID', options);
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+
+            // Time period selection
+            document.getElementById('timePeriod').addEventListener('change', function() {
+                const customRange = document.getElementById('customDateRange');
+                if (this.value === 'custom') {
+                    customRange.style.display = 'block';
+                } else {
+                    customRange.style.display = 'none';
+                }
+            });
+
+            // Apply filters
+            document.getElementById('applyFilters').addEventListener('click', function() {
+                if (typeof loadReportData === 'function') {
+                    loadReportData();
+                }
+            });
+
+            // Reset filters
+            document.getElementById('resetFilters').addEventListener('click', function() {
+                document.getElementById('reportType').value = 'sales';
+                document.getElementById('timePeriod').value = 'week';
+                document.getElementById('customDateRange').style.display = 'none';
+                if (typeof loadReportData === 'function') {
+                    loadReportData();
+                }
+            });
+
+            // Chart type buttons
+            document.querySelectorAll('.btn-chart-type').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.btn-chart-type').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    if (typeof changeChartType === 'function') {
+                        changeChartType(this.getAttribute('data-type'));
+                    }
+                });
+            });
+
+            // Export buttons
+            document.getElementById('exportAll').addEventListener('click', function() {
+                if (typeof exportAllReports === 'function') {
+                    exportAllReports();
+                }
+            });
+
+            document.getElementById('exportPDFFull').addEventListener('click', function() {
+                if (typeof exportPDFReport === 'function') {
+                    exportPDFReport();
+                }
+            });
+
+            document.getElementById('exportExcelFull').addEventListener('click', function() {
+                if (typeof exportExcelReport === 'function') {
+                    exportExcelReport();
+                }
+            });
+
+            document.getElementById('sendToTelegram').addEventListener('click', function() {
+                if (typeof sendReportToTelegram === 'function') {
+                    sendReportToTelegram();
+                }
+            });
+
+            document.getElementById('exportTable').addEventListener('click', function() {
+                if (typeof exportTableData === 'function') {
+                    exportTableData('transactions');
+                }
+            });
+
+            document.getElementById('exportPDF').addEventListener('click', function() {
+                if (typeof exportTablePDF === 'function') {
+                    exportTablePDF();
+                }
+            });
+
+            document.getElementById('exportStock').addEventListener('click', function() {
+                if (typeof exportTableData === 'function') {
+                    exportTableData('stock');
+                }
+            });
+
+            // Close transaction detail modal
+            document.getElementById('closeTransactionModal').addEventListener('click', function() {
+                document.getElementById('transactionDetailModal').classList.remove('active');
+            });
+
+            // Print last receipt from navbar
+            document.getElementById('printReceipt').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (typeof printLastReceipt === 'function') {
+                    printLastReceipt();
+                }
+            });
+
+            // Load initial report data
+            if (typeof loadReportData === 'function') {
+                loadReportData();
+            }
+
+            // Load stock data
+            if (typeof loadStockData === 'function') {
+                loadStockData();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Retail Pro - Restok Barang</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation (sama seperti index.html) -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-store"></i> POS Retail Pro</h2>
+                <button class="close-sidebar" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="kasir.html">
+                        <i class="fas fa-cash-register"></i> Kasir
+                    </a>
+                </li>
+                <li>
+                    <a href="tambah_barang.html">
+                        <i class="fas fa-plus-circle"></i> Tambah Barang
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="restok.html">
+                        <i class="fas fa-boxes"></i> Restok Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="laporan.html">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" id="themeToggle">
+                        <i class="fas fa-moon"></i> Mode Gelap/Terang
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="printReceipt">
+                        <i class="fas fa-print"></i> Cetak Struk Terakhir
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span>Sistem Online</span>
+                </div>
+                <div class="datetime" id="currentDateTime"></div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1><i class="fas fa-boxes"></i> Restok Barang</h1>
+                    <p class="subtitle">Tambah stok produk yang ada</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="autoRestock">
+                        <i class="fas fa-robot"></i> Restok Otomatis
+                    </button>
+                </div>
+            </header>
+
+            <!-- Restok Content -->
+            <div class="restok-content">
+                <!-- Left Panel: Product Selection -->
+                <div class="restok-left">
+                    <div class="product-search-restok">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="restokSearch" placeholder="Cari produk untuk restok...">
+                        </div>
+                        <div class="search-filters">
+                            <select id="categoryFilter">
+                                <option value="">Semua Kategori</option>
+                                <option value="makanan">Makanan</option>
+                                <option value="minuman">Minuman</option>
+                                <option value="sembako">Sembako</option>
+                                <option value="jajan">Jajan</option>
+                            </select>
+                            <select id="stockFilter">
+                                <option value="">Semua Stok</option>
+                                <option value="low">Stok Menipis</option>
+                                <option value="empty">Stok Habis</option>
+                                <option value="normal">Stok Normal</option>
+                            </select>
+                        </div>
+                        <div class="products-list" id="productsList">
+                            <!-- Produk akan ditampilkan di sini -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Restok Form & History -->
+                <div class="restok-right">
+                    <!-- Restok Form -->
+                    <div class="restok-form-section">
+                        <h3><i class="fas fa-cart-plus"></i> Form Restok</h3>
+                        
+                        <div class="selected-product" id="selectedProductInfo">
+                            <div class="empty-selection">
+                                <i class="fas fa-box-open"></i>
+                                <p>Pilih produk untuk direstok</p>
+                            </div>
+                        </div>
+
+                        <form id="restockForm">
+                            <div class="form-group">
+                                <label for="restockQuantity">
+                                    <i class="fas fa-plus-square"></i> Jumlah Restok
+                                </label>
+                                <div class="input-with-buttons">
+                                    <input type="number" id="restockQuantity" 
+                                           placeholder="0" min="1" step="1" disabled>
+                                    <div class="quantity-buttons">
+                                        <button type="button" class="btn-quantity" data-action="decrease">-</button>
+                                        <button type="button" class="btn-quantity" data-action="increase">+</button>
+                                        <button type="button" class="btn-quantity" data-action="set10">10</button>
+                                        <button type="button" class="btn-quantity" data-action="set50">50</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="restockPrice">
+                                    <i class="fas fa-money-bill"></i> Harga Beli Satuan
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-rupiah-sign"></i>
+                                    <input type="number" id="restockPrice" 
+                                           placeholder="0" min="0" step="100" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="supplier">
+                                    <i class="fas fa-truck"></i> Supplier (Opsional)
+                                </label>
+                                <input type="text" id="supplier" placeholder="Nama supplier">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="restockNotes">
+                                    <i class="fas fa-sticky-note"></i> Catatan (Opsional)
+                                </label>
+                                <textarea id="restockNotes" rows="3" 
+                                          placeholder="Catatan restok..."></textarea>
+                            </div>
+
+                            <div class="restock-summary">
+                                <div class="summary-row">
+                                    <span>Total Items</span>
+                                    <span id="totalItemsRestock">0</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Total Biaya</span>
+                                    <span id="totalCostRestock">Rp 0</span>
+                                </div>
+                                <div class="summary-row total">
+                                    <span>Produk yang Direstok</span>
+                                    <span id="productsToRestock">0</span>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success btn-lg" id="processRestock" disabled>
+                                    <i class="fas fa-check-circle"></i> PROSES RESTOK
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="clearRestock">
+                                    <i class="fas fa-times"></i> Batal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Recent Restok History -->
+                    <div class="restok-history">
+                        <div class="section-header">
+                            <h3><i class="fas fa-history"></i> Riwayat Restok</h3>
+                            <button class="btn-link" id="refreshHistory">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="history-list" id="restokHistoryList">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay untuk mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Auto Restock Modal -->
+    <div class="modal" id="autoRestockModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-robot"></i> Restok Otomatis</h3>
+                <button class="close-modal" id="closeAutoRestockModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="auto-restock-content">
+                    <p>Sistem akan secara otomatis menambahkan stok untuk produk yang:</p>
+                    <ul>
+                        <li>Stok di bawah minimum</li>
+                        <li>Stok habis (0)</li>
+                        <li>Produk populer dengan penjualan tinggi</li>
+                    </ul>
+                    
+                    <div class="restock-settings">
+                        <div class="form-group">
+                            <label for="restockThreshold">
+                                <i class="fas fa-sliders-h"></i> Ambang Batas Restok
+                            </label>
+                            <select id="restockThreshold">
+                                <option value="min">Hanya stok di bawah minimum</option>
+                                <option value="empty">Stok habis saja</option>
+                                <option value="both" selected>Keduanya</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="restockAmount">
+                                <i class="fas fa-calculator"></i> Jumlah Restok
+                            </label>
+                            <select id="restockAmount">
+                                <option value="min">Ke level minimum</option>
+                                <option value="double">2x stok minimum</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <div id="customAmountContainer" style="display: none; margin-top: 10px;">
+                                <input type="number" id="customAmount" placeholder="Jumlah custom" min="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="auto-restock-preview" id="autoRestockPreview">
+                        <!-- Preview produk yang akan direstok -->
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" id="previewAutoRestock">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                        <button class="btn btn-success" id="confirmAutoRestock">
+                            <i class="fas fa-play"></i> Jalankan Restok Otomatis
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navbar functionality
+            document.getElementById('toggleSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.add('active');
+                document.getElementById('sidebarOverlay').classList.add('active');
+            });
+
+            document.getElementById('closeSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            });
+
+            document.getElementById('sidebarOverlay').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                this.classList.remove('active');
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                const body = document.body;
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    this.querySelector('i').className = 'fas fa-moon';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-moon"></i> Mode Gelap';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    this.querySelector('i').className = 'fas fa-sun';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+                }
+            });
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').querySelector('i').className = 'fas fa-sun';
+                document.getElementById('themeToggle').querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+            }
+
+            // Update datetime
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                document.getElementById('currentDateTime').textContent = 
+                    now.toLocaleDateString('id-ID', options);
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+
+            // Auto restock button
+            document.getElementById('autoRestock').addEventListener('click', function() {
+                document.getElementById('autoRestockModal').classList.add('active');
+            });
+
+            // Close auto restock modal
+            document.getElementById('closeAutoRestockModal').addEventListener('click', function() {
+                document.getElementById('autoRestockModal').classList.remove('active');
+            });
+
+            // Restock amount selection
+            document.getElementById('restockAmount').addEventListener('change', function() {
+                const customContainer = document.getElementById('customAmountContainer');
+                if (this.value === 'custom') {
+                    customContainer.style.display = 'block';
+                } else {
+                    customContainer.style.display = 'none';
+                }
+            });
+
+            // Preview auto restock
+            document.getElementById('previewAutoRestock').addEventListener('click', function() {
+                if (typeof previewAutoRestock === 'function') {
+                    previewAutoRestock();
+                }
+            });
+
+            // Confirm auto restock
+            document.getElementById('confirmAutoRestock').addEventListener('click', function() {
+                if (typeof processAutoRestock === 'function') {
+                    processAutoRestock();
+                }
+            });
+
+            // Quantity buttons
+            document.querySelectorAll('.btn-quantity').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    const quantityInput = document.getElementById('restockQuantity');
+                    let currentValue = parseInt(quantityInput.value) || 0;
+
+                    switch(action) {
+                        case 'increase':
+                            quantityInput.value = currentValue + 1;
+                            break;
+                        case 'decrease':
+                            if (currentValue > 1) {
+                                quantityInput.value = currentValue - 1;
+                            }
+                            break;
+                        case 'set10':
+                            quantityInput.value = 10;
+                            break;
+                        case 'set50':
+                            quantityInput.value = 50;
+                            break;
+                    }
+
+                    updateRestockSummary();
+                });
+            });
+
+            // Update restock summary when quantity or price changes
+            document.getElementById('restockQuantity').addEventListener('input', updateRestockSummary);
+            document.getElementById('restockPrice').addEventListener('input', updateRestockSummary);
+
+            function updateRestockSummary() {
+                const quantity = parseInt(document.getElementById('restockQuantity').value) || 0;
+                const price = parseFloat(document.getElementById('restockPrice').value) || 0;
+                const totalCost = quantity * price;
+
+                document.getElementById('totalItemsRestock').textContent = quantity;
+                document.getElementById('totalCostRestock').textContent = formatCurrency(totalCost);
+            }
+
+            // Form submission
+            document.getElementById('restockForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (typeof processRestock === 'function') {
+                    processRestock();
+                }
+            });
+
+            // Clear restock form
+            document.getElementById('clearRestock').addEventListener('click', function() {
+                document.getElementById('restockForm').reset();
+                document.getElementById('selectedProductInfo').innerHTML = `
+                    <div class="empty-selection">
+                        <i class="fas fa-box-open"></i>
+                        <p>Pilih produk untuk direstok</p>
+                    </div>
+                `;
+                document.getElementById('processRestock').disabled = true;
+                document.getElementById('restockQuantity').disabled = true;
+                document.getElementById('restockPrice').disabled = true;
+            });
+
+            // Search and filter
+            document.getElementById('restokSearch').addEventListener('input', function() {
+                if (typeof filterProductsForRestock === 'function') {
+                    filterProductsForRestock();
+                }
+            });
+
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                if (typeof filterProductsForRestock === 'function') {
+                    filterProductsForRestock();
+                }
+            });
+
+            document.getElementById('stockFilter').addEventListener('change', function() {
+                if (typeof filterProductsForRestock === 'function') {
+                    filterProductsForRestock();
+                }
+            });
+
+            // Refresh history
+            document.getElementById('refreshHistory').addEventListener('click', function() {
+                if (typeof loadRestokHistory === 'function') {
+                    loadRestokHistory();
+                    this.classList.add('refreshing');
+                    setTimeout(() => this.classList.remove('refreshing'), 1000);
+                }
+            });
+
+            // Print last receipt from navbar
+            document.getElementById('printReceipt').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (typeof printLastReceipt === 'function') {
+                    printLastReceipt();
+                }
+            });
+
+            // Load products for restock
+            if (typeof loadProductsForRestock === 'function') {
+                loadProductsForRestock();
+            }
+
+            // Load restock history
+            if (typeof loadRestokHistory === 'function') {
+                loadRestokHistory();
+            }
+        });
+
+        function formatCurrency(amount) {
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+    </script>
+</body>
+</html>

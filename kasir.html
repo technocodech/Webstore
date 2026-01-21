@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Retail Pro - Kasir</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation (sama seperti index.html) -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-store"></i> POS Retail Pro</h2>
+                <button class="close-sidebar" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="kasir.html">
+                        <i class="fas fa-cash-register"></i> Kasir
+                    </a>
+                </li>
+                <li>
+                    <a href="tambah_barang.html">
+                        <i class="fas fa-plus-circle"></i> Tambah Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="restok.html">
+                        <i class="fas fa-boxes"></i> Restok Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="laporan.html">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" id="themeToggle">
+                        <i class="fas fa-moon"></i> Mode Gelap/Terang
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="printReceipt">
+                        <i class="fas fa-print"></i> Cetak Struk Terakhir
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span>Sistem Online</span>
+                </div>
+                <div class="datetime" id="currentDateTime"></div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1><i class="fas fa-cash-register"></i> Kasir</h1>
+                    <p class="subtitle">Transaksi penjualan cepat</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-danger" id="clearCart">
+                        <i class="fas fa-trash"></i> Bersihkan
+                    </button>
+                </div>
+            </header>
+
+            <!-- Kasir Content -->
+            <div class="kasir-content">
+                <!-- Left Panel: Product Search & Cart -->
+                <div class="kasir-left">
+                    <!-- Product Search -->
+                    <div class="product-search">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="productSearch" placeholder="Cari produk (kode/nama/barcode)...">
+                            <button class="btn btn-primary" id="scanBarcode">
+                                <i class="fas fa-barcode"></i> Scan
+                            </button>
+                        </div>
+                        <div class="search-results" id="searchResults">
+                            <!-- Produk akan ditampilkan di sini -->
+                        </div>
+                    </div>
+
+                    <!-- Shopping Cart -->
+                    <div class="shopping-cart">
+                        <div class="cart-header">
+                            <h3><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h3>
+                            <span class="cart-count">0 item</span>
+                        </div>
+                        <div class="cart-items" id="cartItems">
+                            <!-- Items akan ditampilkan di sini -->
+                            <div class="empty-cart">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>Keranjang belanja kosong</p>
+                                <p class="small">Cari dan tambah produk untuk memulai transaksi</p>
+                            </div>
+                        </div>
+                        <div class="cart-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="subtotal">Rp 0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Diskon</span>
+                                <span id="discount">Rp 0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span id="totalAmount">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Payment & Receipt -->
+                <div class="kasir-right">
+                    <!-- Payment Section -->
+                    <div class="payment-section">
+                        <h3><i class="fas fa-credit-card"></i> Pembayaran</h3>
+                        
+                        <div class="payment-methods">
+                            <div class="method active" data-method="cash">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Tunai</span>
+                            </div>
+                            <div class="method" data-method="transfer">
+                                <i class="fas fa-university"></i>
+                                <span>Transfer</span>
+                            </div>
+                            <div class="method" data-method="card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Kartu</span>
+                            </div>
+                            <div class="method" data-method="qris">
+                                <i class="fas fa-qrcode"></i>
+                                <span>QRIS</span>
+                            </div>
+                        </div>
+
+                        <div class="payment-inputs">
+                            <div class="input-group">
+                                <label for="cashAmount">Uang Diterima</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-money-bill"></i>
+                                    <input type="number" id="cashAmount" placeholder="0" min="0">
+                                </div>
+                                <div class="quick-cash">
+                                    <button class="btn-quick" data-amount="50000">50K</button>
+                                    <button class="btn-quick" data-amount="100000">100K</button>
+                                    <button class="btn-quick" data-amount="200000">200K</button>
+                                    <button class="btn-quick" data-amount="500000">500K</button>
+                                </div>
+                            </div>
+
+                            <div class="change-section">
+                                <div class="change-row">
+                                    <span>Kembalian</span>
+                                    <span id="changeAmount">Rp 0</span>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button class="btn btn-success btn-lg" id="processPayment">
+                                    <i class="fas fa-check-circle"></i> PROSES PEMBAYARAN
+                                </button>
+                                <button class="btn btn-secondary" id="saveTransaction">
+                                    <i class="fas fa-save"></i> Simpan Draft
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="recent-transactions">
+                        <h3><i class="fas fa-history"></i> Transaksi Terakhir</h3>
+                        <div class="transactions-list" id="recentTransactionsList">
+                            <!-- Akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay untuk mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Modal Receipt -->
+    <div class="modal" id="receiptModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-receipt"></i> Struk Pembayaran</h3>
+                <button class="close-modal" id="closeReceiptModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="receipt" id="receiptContent">
+                    <!-- Struk akan ditampilkan di sini -->
+                </div>
+                <div class="receipt-actions">
+                    <button class="btn btn-primary" id="printReceiptBtn">
+                        <i class="fas fa-print"></i> Cetak
+                    </button>
+                    <button class="btn btn-secondary" id="downloadReceipt">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn btn-success" id="sendTelegram">
+                        <i class="fas fa-paper-plane"></i> Kirim ke Telegram
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        // Include navbar functionality from index.html
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle sidebar
+            document.getElementById('toggleSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.add('active');
+                document.getElementById('sidebarOverlay').classList.add('active');
+            });
+
+            // Close sidebar
+            document.getElementById('closeSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            });
+
+            // Overlay click to close sidebar
+            document.getElementById('sidebarOverlay').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                this.classList.remove('active');
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                const body = document.body;
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    this.querySelector('i').className = 'fas fa-moon';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-moon"></i> Mode Gelap';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    this.querySelector('i').className = 'fas fa-sun';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+                }
+            });
+
+            // Load saved theme
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').querySelector('i').className = 'fas fa-sun';
+                document.getElementById('themeToggle').querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+            }
+
+            // Update datetime
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                document.getElementById('currentDateTime').textContent = 
+                    now.toLocaleDateString('id-ID', options);
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+
+            // Clear cart
+            document.getElementById('clearCart').addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin menghapus semua item di keranjang?')) {
+                    if (typeof clearCart === 'function') {
+                        clearCart();
+                    }
+                }
+            });
+
+            // Payment methods selection
+            document.querySelectorAll('.payment-methods .method').forEach(method => {
+                method.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-methods .method').forEach(m => {
+                        m.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+
+            // Quick cash buttons
+            document.querySelectorAll('.quick-cash .btn-quick').forEach(button => {
+                button.addEventListener('click', function() {
+                    const amount = parseInt(this.getAttribute('data-amount'));
+                    document.getElementById('cashAmount').value = amount;
+                    if (typeof calculateChange === 'function') {
+                        calculateChange();
+                    }
+                });
+            });
+
+            // Auto calculate change when cash amount changes
+            document.getElementById('cashAmount').addEventListener('input', function() {
+                if (typeof calculateChange === 'function') {
+                    calculateChange();
+                }
+            });
+
+            // Process payment
+            document.getElementById('processPayment').addEventListener('click', function() {
+                if (typeof processPayment === 'function') {
+                    processPayment();
+                }
+            });
+
+            // Save draft transaction
+            document.getElementById('saveTransaction').addEventListener('click', function() {
+                if (typeof saveDraftTransaction === 'function') {
+                    saveDraftTransaction();
+                }
+            });
+
+            // Print last receipt from navbar
+            document.getElementById('printReceipt').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (typeof printLastReceipt === 'function') {
+                    printLastReceipt();
+                }
+            });
+
+            // Close receipt modal
+            document.getElementById('closeReceiptModal').addEventListener('click', function() {
+                document.getElementById('receiptModal').classList.remove('active');
+            });
+
+            // Print receipt button in modal
+            document.getElementById('printReceiptBtn').addEventListener('click', function() {
+                window.print();
+            });
+
+            // Load products for search
+            if (typeof loadProductsForKasir === 'function') {
+                loadProductsForKasir();
+            }
+
+            // Load recent transactions
+            if (typeof loadRecentTransactions === 'function') {
+                loadRecentTransactions();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Retail Pro - Tambah Barang</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation (sama seperti index.html) -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-store"></i> POS Retail Pro</h2>
+                <button class="close-sidebar" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="kasir.html">
+                        <i class="fas fa-cash-register"></i> Kasir
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="tambah_barang.html">
+                        <i class="fas fa-plus-circle"></i> Tambah Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="restok.html">
+                        <i class="fas fa-boxes"></i> Restok Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="laporan.html">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" id="themeToggle">
+                        <i class="fas fa-moon"></i> Mode Gelap/Terang
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="printReceipt">
+                        <i class="fas fa-print"></i> Cetak Struk Terakhir
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span>Sistem Online</span>
+                </div>
+                <div class="datetime" id="currentDateTime"></div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1><i class="fas fa-plus-circle"></i> Tambah Barang</h1>
+                    <p class="subtitle">Tambah produk baru ke inventaris</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="scanBarcodeNew">
+                        <i class="fas fa-barcode"></i> Scan Barcode
+                    </button>
+                </div>
+            </header>
+
+            <!-- Tambah Barang Content -->
+            <div class="tambah-barang-content">
+                <div class="form-section">
+                    <form id="productForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productCode">
+                                    <i class="fas fa-barcode"></i> Kode Produk
+                                </label>
+                                <div class="input-with-button">
+                                    <input type="text" id="productCode" required 
+                                           placeholder="Misal: PRD001" maxlength="20">
+                                    <button type="button" class="btn btn-secondary" id="generateCode">
+                                        Generate
+                                    </button>
+                                </div>
+                                <small class="form-help">Kode unik untuk produk</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="productName">
+                                    <i class="fas fa-tag"></i> Nama Produk
+                                </label>
+                                <input type="text" id="productName" required 
+                                       placeholder="Nama lengkap produk">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">
+                                    <i class="fas fa-layer-group"></i> Kategori
+                                </label>
+                                <select id="category" required>
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="makanan">Makanan</option>
+                                    <option value="minuman">Minuman</option>
+                                    <option value="sembako">Sembako</option>
+                                    <option value="jajan">Jajan</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="unit">
+                                    <i class="fas fa-balance-scale"></i> Satuan
+                                </label>
+                                <select id="unit" required>
+                                    <option value="">Pilih Satuan</option>
+                                    <option value="pcs">Pcs</option>
+                                    <option value="pack">Pack</option>
+                                    <option value="dus">Dus</option>
+                                    <option value="kg">Kg</option>
+                                    <option value="liter">Liter</option>
+                                    <option value="meter">Meter</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="purchasePrice">
+                                    <i class="fas fa-money-bill"></i> Harga Beli
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-rupiah-sign"></i>
+                                    <input type="number" id="purchasePrice" required 
+                                           placeholder="0" min="0" step="100">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sellingPrice">
+                                    <i class="fas fa-tags"></i> Harga Jual
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-rupiah-sign"></i>
+                                    <input type="number" id="sellingPrice" required 
+                                           placeholder="0" min="0" step="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="stock">
+                                    <i class="fas fa-boxes"></i> Stok Awal
+                                </label>
+                                <input type="number" id="stock" required 
+                                       placeholder="0" min="0" step="1" value="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="minStock">
+                                    <i class="fas fa-exclamation-triangle"></i> Stok Minimum
+                                </label>
+                                <input type="number" id="minStock" required 
+                                       placeholder="0" min="0" step="1" value="5">
+                                <small class="form-help">Akan muncul peringatan jika stok di bawah ini</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="barcode">
+                                <i class="fas fa-barcode"></i> Barcode (Opsional)
+                            </label>
+                            <div class="input-with-button">
+                                <input type="text" id="barcode" 
+                                       placeholder="Kode barcode 13 digit">
+                                <button type="button" class="btn btn-secondary" id="scanBarcodeBtn">
+                                    <i class="fas fa-camera"></i> Scan
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">
+                                <i class="fas fa-file-alt"></i> Deskripsi (Opsional)
+                            </label>
+                            <textarea id="description" rows="3" 
+                                      placeholder="Deskripsi produk..."></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save"></i> Simpan Produk
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="resetForm">
+                                <i class="fas fa-redo"></i> Reset Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Products Added -->
+                <div class="recent-products">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Produk Terakhir Ditambahkan</h3>
+                        <button class="btn-link" id="refreshProducts">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Nama</th>
+                                    <th>Kategori</th>
+                                    <th>Stok</th>
+                                    <th>Harga Jual</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentProductsTable">
+                                <!-- Data akan diisi oleh JavaScript -->
+                                <tr>
+                                    <td colspan="6" class="text-center">Memuat data produk...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay untuk mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Barcode Scanner Modal -->
+    <div class="modal" id="barcodeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-barcode"></i> Scan Barcode</h3>
+                <button class="close-modal" id="closeBarcodeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="barcode-scanner">
+                    <div class="scanner-placeholder" id="scannerPlaceholder">
+                        <i class="fas fa-camera"></i>
+                        <p>Arahkan kamera ke barcode</p>
+                    </div>
+                    <video id="barcodeScanner" style="display: none;"></video>
+                    <div class="scanner-actions">
+                        <button class="btn btn-primary" id="startScanner">
+                            <i class="fas fa-play"></i> Mulai Scan
+                        </button>
+                        <button class="btn btn-secondary" id="stopScanner" style="display: none;">
+                            <i class="fas fa-stop"></i> Stop Scan
+                        </button>
+                        <button class="btn btn-secondary" id="manualInput">
+                            <i class="fas fa-keyboard"></i> Input Manual
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navbar functionality
+            document.getElementById('toggleSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.add('active');
+                document.getElementById('sidebarOverlay').classList.add('active');
+            });
+
+            document.getElementById('closeSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            });
+
+            document.getElementById('sidebarOverlay').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                this.classList.remove('active');
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                const body = document.body;
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    this.querySelector('i').className = 'fas fa-moon';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-moon"></i> Mode Gelap';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    this.querySelector('i').className = 'fas fa-sun';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+                }
+            });
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').querySelector('i').className = 'fas fa-sun';
+                document.getElementById('themeToggle').querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+            }
+
+            // Update datetime
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                document.getElementById('currentDateTime').textContent = 
+                    now.toLocaleDateString('id-ID', options);
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+
+            // Generate product code
+            document.getElementById('generateCode').addEventListener('click', function() {
+                const timestamp = Date.now().toString().slice(-6);
+                const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                document.getElementById('productCode').value = `PRD${timestamp}${random}`;
+            });
+
+            // Calculate selling price based on purchase price
+            document.getElementById('purchasePrice').addEventListener('input', function() {
+                const purchasePrice = parseFloat(this.value) || 0;
+                const sellingPrice = purchasePrice * 1.3; // 30% markup
+                if (!document.getElementById('sellingPrice').value) {
+                    document.getElementById('sellingPrice').value = Math.ceil(sellingPrice / 100) * 100;
+                }
+            });
+
+            // Form submission
+            document.getElementById('productForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (typeof saveProduct === 'function') {
+                    saveProduct();
+                }
+            });
+
+            // Reset form
+            document.getElementById('resetForm').addEventListener('click', function() {
+                document.getElementById('productForm').reset();
+            });
+
+            // Barcode scanner
+            document.getElementById('scanBarcodeNew').addEventListener('click', function() {
+                document.getElementById('barcodeModal').classList.add('active');
+            });
+
+            document.getElementById('scanBarcodeBtn').addEventListener('click', function() {
+                document.getElementById('barcodeModal').classList.add('active');
+            });
+
+            document.getElementById('closeBarcodeModal').addEventListener('click', function() {
+                document.getElementById('barcodeModal').classList.remove('active');
+                if (typeof stopBarcodeScanner === 'function') {
+                    stopBarcodeScanner();
+                }
+            });
+
+            document.getElementById('startScanner').addEventListener('click', function() {
+                if (typeof startBarcodeScanner === 'function') {
+                    startBarcodeScanner();
+                }
+            });
+
+            document.getElementById('stopScanner').addEventListener('click', function() {
+                if (typeof stopBarcodeScanner === 'function') {
+                    stopBarcodeScanner();
+                }
+            });
+
+            document.getElementById('manualInput').addEventListener('click', function() {
+                const barcode = prompt('Masukkan kode barcode secara manual:');
+                if (barcode) {
+                    document.getElementById('barcode').value = barcode;
+                    document.getElementById('barcodeModal').classList.remove('active');
+                }
+            });
+
+            // Print last receipt from navbar
+            document.getElementById('printReceipt').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (typeof printLastReceipt === 'function') {
+                    printLastReceipt();
+                }
+            });
+
+            // Refresh products list
+            document.getElementById('refreshProducts').addEventListener('click', function() {
+                if (typeof loadRecentProducts === 'function') {
+                    loadRecentProducts();
+                    this.classList.add('refreshing');
+                    setTimeout(() => this.classList.remove('refreshing'), 1000);
+                }
+            });
+
+            // Load recent products
+            if (typeof loadRecentProducts === 'function') {
+                loadRecentProducts();
+            }
+        });
+    </script>
+</body>
+</html>

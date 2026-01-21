@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Retail Pro - Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-store"></i> POS Retail Pro</h2>
+                <button class="close-sidebar" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="index.html">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="kasir.html">
+                        <i class="fas fa-cash-register"></i> Kasir
+                    </a>
+                </li>
+                <li>
+                    <a href="tambah_barang.html">
+                        <i class="fas fa-plus-circle"></i> Tambah Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="restok.html">
+                        <i class="fas fa-boxes"></i> Restok Barang
+                    </a>
+                </li>
+                <li>
+                    <a href="laporan.html">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" id="themeToggle">
+                        <i class="fas fa-moon"></i> Mode Gelap/Terang
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="printReceipt">
+                        <i class="fas fa-print"></i> Cetak Struk Terakhir
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span>Sistem Online</span>
+                </div>
+                <div class="datetime" id="currentDateTime"></div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1><i class="fas fa-home"></i> Dashboard</h1>
+                    <p class="subtitle">Ringkasan performa bisnis Anda</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-refresh" id="refreshData">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon income">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Pendapatan Hari Ini</h3>
+                            <p class="stat-value" id="todayIncome">Rp 0</p>
+                            <p class="stat-change">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0% dari kemarin</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon transactions">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Transaksi Hari Ini</h3>
+                            <p class="stat-value" id="todayTransactions">0</p>
+                            <p class="stat-change">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0 transaksi</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon products">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Produk</h3>
+                            <p class="stat-value" id="totalProducts">0</p>
+                            <p class="stat-change">
+                                <i class="fas fa-box-open"></i>
+                                <span>Produk tersedia</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon low-stock">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Stok Menipis</h3>
+                            <p class="stat-value" id="lowStockCount">0</p>
+                            <p class="stat-change">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>Perlu restok</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-line"></i> Pendapatan 7 Hari Terakhir</h3>
+                            <select id="chartPeriod" class="chart-select">
+                                <option value="7days">7 Hari</option>
+                                <option value="30days">30 Hari</option>
+                                <option value="year">Tahunan</option>
+                            </select>
+                        </div>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Penjualan per Kategori</h3>
+                        </div>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="recent-transactions">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Transaksi Terbaru</h3>
+                        <a href="laporan.html" class="btn-link">Lihat Semua</a>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Transaksi</th>
+                                    <th>Waktu</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentTransactions">
+                                <!-- Data akan diisi oleh JavaScript -->
+                                <tr>
+                                    <td colspan="5" class="text-center">Memuat data transaksi...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Low Stock Warning -->
+                <div class="low-stock-section" id="lowStockSection">
+                    <!-- Data akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay untuk mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        // Navbar functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle sidebar
+            document.getElementById('toggleSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.add('active');
+                document.getElementById('sidebarOverlay').classList.add('active');
+            });
+
+            // Close sidebar
+            document.getElementById('closeSidebar').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            });
+
+            // Close sidebar on overlay click
+            document.getElementById('sidebarOverlay').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.remove('active');
+                this.classList.remove('active');
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                const body = document.body;
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    this.querySelector('i').className = 'fas fa-moon';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-moon"></i> Mode Gelap';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    this.querySelector('i').className = 'fas fa-sun';
+                    this.querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+                }
+            });
+
+            // Load saved theme
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').querySelector('i').className = 'fas fa-sun';
+                document.getElementById('themeToggle').querySelector('i').parentNode.innerHTML = '<i class="fas fa-sun"></i> Mode Terang';
+            }
+
+            // Update datetime
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+                document.getElementById('currentDateTime').textContent = 
+                    now.toLocaleDateString('id-ID', options);
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // Refresh data
+            document.getElementById('refreshData').addEventListener('click', function() {
+                if (typeof loadDashboardData === 'function') {
+                    loadDashboardData();
+                    this.classList.add('refreshing');
+                    setTimeout(() => this.classList.remove('refreshing'), 1000);
+                }
+            });
+
+            // Print last receipt
+            document.getElementById('printReceipt').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (typeof printLastReceipt === 'function') {
+                    printLastReceipt();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
